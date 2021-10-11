@@ -71,9 +71,7 @@ char *get_cmd(char *cmd, char *var)
 	while (s[i])
 	{
 		fp = get_fp(s[i], cmd);
-		if (access(fp, F_OK) == -1)
-			continue ;
-		if (access(fp, X_OK))
+		if (access(fp, X_OK) != -1)
 		{
 			clean_split(s, ft_spllen(s));
 			return (fp);
