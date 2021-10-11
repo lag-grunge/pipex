@@ -20,6 +20,22 @@ int	find_var_in_env(char *var, char *env[])
 	return (-1);
 }
 
+static char *get_fp(char *dir, char *cmd)
+{
+	char	*fp;
+	size_t	fp_len;
+	size_t	dir_len;
+
+	dir_len = ft_strlen(dir);
+	fp_len = dir_len  + ft_strlen(cmd) + 1;
+	fp = malloc(sizeof(char) * (fp_len + 1));
+	ft_strlcpy(fp, dir, dir_len + 1);
+	fp[dir_len] = '/';
+	fp[dir_len + 1] = 0;
+	ft_strlcat(fp, cmd, fp_len + 1);
+	return (fp);
+}
+
 int	find_cmd_in_var(char *cmd, char *var)
 {
 	int		ret;
@@ -28,13 +44,11 @@ int	find_cmd_in_var(char *cmd, char *var)
 	char 	*fp;
 
 	i = 0;
-	s = ft_split(var, ':');
+	s = ft_split(ft_strchr(var, '=') + 1, ':');
 	ret = not_fnd_bin_in_path;
 	while (ret && s[i])
 	{
-		fp = ft_strjoin(s[i], cmd);
-		if (access(fp, F_OK) == -1)
-			continue ;
+		fp = get_fp(s[i], cmd);
 		if (access(fp, X_OK) == -1)
 			ret = not_perms_for_exec;
 		else
@@ -53,10 +67,10 @@ char *get_cmd(char *cmd, char *var)
 	char 	*fp;
 
 	i = 0;
-	s = ft_split(var, ':');
+	s = ft_split(ft_strchr(var, '=') + 1, ':');
 	while (s[i])
 	{
-		fp = ft_strjoin(s[i], cmd);
+		fp = get_fp(s[i], cmd);
 		if (access(fp, F_OK) == -1)
 			continue ;
 		if (access(fp, X_OK))
@@ -76,6 +90,11 @@ void ft_which(char **exec_path, char *cmd, char *env[])
 	int	var_num;
 	int	find_cmd;
 
+	if (ft_strchr(cmd, '/'))
+	{
+		*exec_path = cmd;
+		return ;
+	}
 	var_num = find_var_in_env("PATH", env);
 	if (var_num == -1)
 	{

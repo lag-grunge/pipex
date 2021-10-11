@@ -13,9 +13,9 @@ void ft_pipex(int argc, char *argv[], char *env[])
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 		char **s = ft_split(argv[2], ' ');
+		ft_which(&cmd, s[0], env);
 		execve(s[0], s, env);
-		printf("%s\n", s[0]);
-		perror("execve bad");
+		perror(s[0]);
 	}
 	pipe(pdes);
 	pid_t pid = fork();
@@ -33,11 +33,9 @@ void ft_pipex(int argc, char *argv[], char *env[])
 		close(pdes[0]);
 		close(pdes[1]);
 		char **s = ft_split(argv[argc - 1], ' ');
-		execve(s[0], s, env);
 		ft_which(&cmd, s[0], env);
 		execve(cmd, s, env);
-		printf("%s\n", s[0]);
-		perror("execve bad");
+		perror(s[0]);
 	}
 }
 
