@@ -100,10 +100,12 @@ void ft_which(char **exec_path, char *cmd, char *env[])
 		exit(nopath_in_env);
 	}
 	find_cmd = find_cmd_in_var(cmd, env[var_num]);
+/*
 	if (find_cmd == not_perms_for_exec)
 		perror(PERM_DENIAL_MSG);
 	else if (find_cmd == not_fnd_bin_in_path)
 		perror(BIN_NOT_FOUND_MSG);
+*/
 	if (find_cmd)
 		exit(find_cmd);
 	*exec_path = get_cmd(cmd, env[var_num]);

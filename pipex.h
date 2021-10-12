@@ -17,7 +17,11 @@
 enum e_errors	{
 	nopath_in_env = 1,
 	not_perms_for_exec = 2,
-	not_fnd_bin_in_path = 3
+	not_fnd_bin_in_path = 3,
+	file1_not_open = 4,
+	file2_not_open = 5,
+	first_cmd_fail = 6,
+	second_cmd_fail = 7
 };
 
 
