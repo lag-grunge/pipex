@@ -13,8 +13,9 @@ int	find_var_in_env(char *var, char *env[])
 	{
 		p = ft_strchr(env[i], '=') - env[i];
 		s = ft_substr(env[i], 0, p);
-		if (!ft_strncmp(s, var, var_len))
+		if (!ft_strncmp(s, var, var_len)) {
 			return (i);
+		}
 		i++;
 	}
 	return (-1);
@@ -46,12 +47,11 @@ int	find_cmd_in_var(char *cmd, char *var)
 	i = 0;
 	s = ft_split(ft_strchr(var, '=') + 1, ':');
 	ret = not_fnd_bin_in_path;
-	while (ret && s[i])
-	{
+	while (ret && s[i]) {
 		fp = get_fp(s[i], cmd);
-		if (access(fp, X_OK) == -1)
+		if (ret == not_fnd_bin_in_path && !access(fp, F_OK))
 			ret = not_perms_for_exec;
-		else
+		if (ret == not_perms_for_exec && !access(fp, X_OK))
 			ret = 0;
 		free(fp);
 		i++;
@@ -71,7 +71,7 @@ char *get_cmd(char *cmd, char *var)
 	while (s[i])
 	{
 		fp = get_fp(s[i], cmd);
-		if (access(fp, X_OK) != -1)
+		if (!access(fp, X_OK))
 		{
 			clean_split(s, ft_spllen(s));
 			return (fp);
@@ -96,17 +96,17 @@ void ft_which(char **exec_path, char *cmd, char *env[])
 	var_num = find_var_in_env("PATH", env);
 	if (var_num == -1)
 	{
-		perror(BAD_ENV_MSG);
+		write(2, BAD_ENV_MSG, ft_strlen(BAD_ENV_MSG));
 		exit(nopath_in_env);
 	}
 	find_cmd = find_cmd_in_var(cmd, env[var_num]);
-/*
 	if (find_cmd == not_perms_for_exec)
-		perror(PERM_DENIAL_MSG);
+		perror(cmd);
 	else if (find_cmd == not_fnd_bin_in_path)
-		perror(BIN_NOT_FOUND_MSG);
-*/
+		perror(cmd);
 	if (find_cmd)
 		exit(find_cmd);
 	*exec_path = get_cmd(cmd, env[var_num]);
+	if (!*exec_path)
+		exit(not_perms_for_exec);
 }

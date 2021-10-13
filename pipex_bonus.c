@@ -36,7 +36,10 @@ void ft_exec(char *cmd, char *env[])
 
 void ft_openfiles(int *fd_in, int *fd_out, char *argv[])
 {
+	if (!ft_strncmp("here_doc", argv[1]))
+	{
 
+	}
 	*fd_in = open(argv[1], O_RDONLY);
 	if (*fd_in == -1)
 	{
@@ -96,10 +99,7 @@ int main(int argc, char *argv[], char *env[])
 
 	fd_in = 0;
 	fd_out = 0;
-	if (argc >= 5)
-	{
-		ft_openfiles(&fd_in, &fd_out, argv);
-		ft_pipex(fd_in, fd_out, argv, env);
-	}
+	ft_openfiles(&fd_in, &fd_out, argv);
+	ft_pipex(fd_in, fd_out, argv, env);
 	return (0);
 }
