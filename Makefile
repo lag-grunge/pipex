@@ -1,6 +1,6 @@
 NAME = pipex
 
-SRCS = pipex.c parser.c
+SRCS = pipex.c parser.c pipex_bonus.c
 
 OBJS = ${SRCS:.c=.o}
 

@@ -37,14 +37,14 @@ void ft_exec(char *cmd, char *env[])
 void ft_openfiles(int *fd_in, int *fd_out, char *argv[])
 {
 	if (!ft_strncmp("here_doc", argv[1]))
+		fd_in = STDIN_FILENO;
+	else
 	{
-
-	}
-	*fd_in = open(argv[1], O_RDONLY);
-	if (*fd_in == -1)
-	{
-		perror(argv[1]);
-		exit(file1_not_open);
+		*fd_in = open(argv[1], O_RDONLY);
+		if (*fd_in == -1) {
+			perror(argv[1]);
+			exit(file1_not_open);
+		}
 	}
 	*fd_out = open(argv[4], O_WRONLY | O_CREAT, 0666);
 	if (*fd_out == -1)
