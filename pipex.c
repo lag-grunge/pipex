@@ -77,8 +77,8 @@ void ft_pipex(int fd_in, int fd_out, char *argv[], char *env[])
 		exit(first_cmd_fail);
 	}
 	ft_redirect(fd_in, fd_out, pdes, -1);
-	waitpid(pid, NULL, 0);
-	waitpid(pid2, NULL, 0);
+	wait(NULL);
+	wait(NULL);
 	char *str, *tmp;
 	str = ft_itoa(getpid());
 	tmp = ft_strjoin("leaks ", str);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[], char *env[])
 	if (argc >= 5)
 	{
 		ft_openfiles(&fd_in, &fd_out, argv);
-		ft_pipex(fd_in, fd_out, argv, env);
+		ft_pipex(fd_out, 0, argv, env);
 	}
 	return (0);
 }

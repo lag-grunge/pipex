@@ -1,8 +1,10 @@
 NAME = pipex
 
-SRCS = pipex.c parser.c pipex_bonus.c
+SRCS = pipex.c parser.c
+SRCS_B = pipex_bonus.c parser.c
 
 OBJS = ${SRCS:.c=.o}
+OBJS_B = ${SRCS_B:.c=.o}
 
 LIBFT = libft.a
 
@@ -14,13 +16,19 @@ LIBRARIES = -L${LIB_DIR} -lft
 
 CFLAGS = -g -Wall -Wextra -Werror
 
-all : ${LIBFT} ${NAME} ${NAME2}
+all : ${LIBFT} ${NAME}
 
 ${LIBFT} : ${LIB_DIR}
 	make -C $<
 
-${NAME} : ${OBJS}
-	$(CC) ${CFLAGS} ${LIBRARIES} $^ -o $@
+${NAME} : ${OBJS} ${OBJS_B}
+	ifeq (BONUS, 1)
+		$(CC) ${CFLAGS} ${LIBRARIES} ${OBJS_B} -o $@
+	else
+		$(CC) ${CFLAGS} ${LIBRARIES} ${OBJS} -o $@
+
+bonus	:
+	make all -C .
 
 %.o : %.c
 	$(CC) ${CFLAGS} ${INCLUDE} -c $< -o $@

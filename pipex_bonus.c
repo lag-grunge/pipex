@@ -1,27 +1,5 @@
 #include "pipex.h"
 
-void ft_redirect(int fd_in, int fd_out, int *pdes, int in_out)
-{
-	if (in_out == STDIN_FILENO)
-	{
-		dup2(pdes[0], STDIN_FILENO);
-		dup2(fd_out, STDOUT_FILENO);
-	}
-	else if (in_out == STDOUT_FILENO)
-	{
-		dup2(fd_in, STDIN_FILENO);
-		dup2(pdes[1], STDOUT_FILENO);
-	}
-	else if (in_out == -1)
-	{
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
-	}
-	close(fd_in);
-	close(fd_out);
-	close(pdes[0]);
-	close(pdes[1]);
-}
 
 void ft_exec(char *cmd, char *env[])
 {
@@ -36,8 +14,8 @@ void ft_exec(char *cmd, char *env[])
 
 void ft_openfiles(int *fd_in, int *fd_out, char *argv[])
 {
-	if (!ft_strncmp("here_doc", argv[1]))
-		fd_in = STDIN_FILENO;
+	if (!ft_strncmp(HEREDOC, argv[1], ft_strlen(HEREDOC)))
+		*fd_in = STDIN_FILENO;
 	else
 	{
 		*fd_in = open(argv[1], O_RDONLY);
@@ -58,48 +36,63 @@ void ft_openfiles(int *fd_in, int *fd_out, char *argv[])
 	}
 }
 
-void ft_pipex(int fd_in, int fd_out, char *argv[], char *env[])
+void ft_pipex_bonus(int fd_in_out[2], int argc, char *argv[], char *env[])
 {
-	int		pdes[2];
-	pid_t	pid;
-	pid_t	pid2;
+	static int	**pdes;
+	pid_t		pid;
+	int			in_out;
 
-	pipe(pdes);
+	if (fd_in_out[0] == STDIN_FILENO && argc == (int)ft_spllen(argv) - 4)
+	{
+		pdes = (int **)malloc(sizeof(int [2]) * (argc - 1));
+		in_out = last;
+	}
+	else if (fd_in_out[0] != STDIN_FILENO && argc == (int)ft_spllen(argv) - 3)
+	{
+		pdes = (int **)malloc(sizeof(int [2]) * (argc - 1));
+		in_out = last;
+	}
+	else if (!argc)
+	{
+		int ret;
+
+		ft_redirect_bonus(fd_in_out, pdes[argc - 1], parent);
+		while (ret != -1)
+			ret = wait(NULL);
+		free(pdes);
+		return ;
+	}
+	else
+		in_out = STDIN_FILENO;
+	if (pipe(pdes[argc - 1]) == -1)
+		exit(pipe_fail);
 	pid = fork();
-	if (pid == 0)
+	if (pid < 0)
+		exit(fork_fail);
+	else if (pid == 0)
 	{
-		ft_redirect(fd_in, fd_out, pdes, STDIN_FILENO);
-		ft_exec(argv[3], env);
-		exit(second_cmd_fail);
+		ft_redirect_bonus(fd_in_out, pdes[argc - 1], in_out);
+		ft_exec(argv[argc - 1], env);
+		perror(argv[argc - 1]);
+		exit(cmd_exec_fail);
 	}
-	pid2 = fork();
-	if (pid2 == 0)
-	{
-		ft_redirect(fd_in, fd_out, pdes, STDOUT_FILENO);
-		ft_exec(argv[2], env);
-		exit(first_cmd_fail);
-	}
-	ft_redirect(fd_in, fd_out, pdes, -1);
-	waitpid(pid, NULL, 0);
-	waitpid(pid2, NULL, 0);
-	char *str, *tmp;
-	str = ft_itoa(getpid());
-	tmp = ft_strjoin("leaks ", str);
-	system(tmp);
-	free(str);
-	free(tmp);
-	while (1)
-		;
+	in_out = STDOUT_FILENO;
+	if (argc == 1)
+		in_out = first;
+	ft_redirect_bonus(fd_in_out, pdes[argc - 1], in_out);
+	ft_pipex_bonus(fd_in_out, argc - 1, argv, env);
 }
 
 int main(int argc, char *argv[], char *env[])
 {
-	int fd_in;
-	int fd_out;
+	int fd[2];
 
-	fd_in = 0;
-	fd_out = 0;
-	ft_openfiles(&fd_in, &fd_out, argv);
-	ft_pipex(fd_in, fd_out, argv, env);
+	fd[0] = 0;
+	fd[1] = 0;
+	ft_openfiles(&fd[0], &fd[1], argv);
+	if (fd[0] == STDIN_FILENO && argc >= 6)
+		ft_pipex_bonus(fd, argc - 4, argv, env);
+	else if (fd[0] != STDIN_FILENO && argc >= 5)
+		ft_pipex_bonus(fd, argc - 3, argv, env);
 	return (0);
 }
