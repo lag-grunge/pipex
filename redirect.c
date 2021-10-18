@@ -1,13 +1,13 @@
 #include "pipex.h"
 
-static void	ft_redirect_parent(void)
+static void	ft_redirect_parent(int fd_in_out[2])
 {
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(fd_in_out[0]);
 }
 
-static void ft_redirect_common(void)
+static void ft_redirect_common(int fd_in_out[2], int *pdes)
 {
 	close(fd_in_out[1]);
 	close(pdes[0]);
@@ -17,7 +17,7 @@ static void ft_redirect_common(void)
 void	ft_redirect_bonus(int fd_in_out[2], int *pdes, int in_out)
 {
 	if (in_out == parent)
-		ft_redirect_parent();
+		ft_redirect_parent(fd_in_out);
 	else if (in_out == first)
 	{
 		if (fd_in_out[0] != STDIN_FILENO)
@@ -39,6 +39,5 @@ void	ft_redirect_bonus(int fd_in_out[2], int *pdes, int in_out)
 	}
 	else if (in_out == STDOUT_FILENO)
 		dup2(pdes[1], STDOUT_FILENO);
-	ft_redirect_common();
+	ft_redirect_common(fd_in_out, pdes);
 }
-
