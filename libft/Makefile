@@ -3,7 +3,8 @@ NAME = libft.a
 SRCS = 	ft_memset.c ft_bzero.c ft_memcpy.c ft_memchr.c \
 		ft_strlen.c ft_strlcpy.c ft_strlcat.c ft_strchr.c ft_strncmp.c \
 		ft_strdup.c ft_substr.c ft_split.c ft_split_utils.c \
-		ft_putstr_fd.c ft_calloc.c get_next_line.c
+		ft_putstr_fd.c ft_putendl_fd.c ft_putchar_fd.c \
+		ft_calloc.c get_next_line.c
 OBJS = $(SRCS:.c=.o)
 
 INCLUDE = ./

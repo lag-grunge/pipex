@@ -9,7 +9,8 @@ static int ft_openfiles(int argc, char *argv[])
     cmd_start = 2;
     if (!ft_strncmp(HEREDOC, argv[1], ft_strlen(HEREDOC)))
     {
-		fd_in = read_here_doc(argv[2]);
+		read_here_doc(argv[2]);
+		fd_in = open_for_read("heredoc");
         cmd_start = 3;
     }
 	else

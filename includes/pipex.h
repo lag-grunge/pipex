@@ -38,7 +38,7 @@ enum e_errors	{
 void	ft_which(char **exec_path, char *cmd, char *env[]);
 int		open_for_write(char *filename);
 int		open_for_read(char *filename);
-int		read_here_doc(char *limiter);
+void	read_here_doc(char *limiter);
 void	ft_redirect(int *pdes, int in_out);
 void 	ft_exec(char *cmd, char *env[]);
 void	free_2d_array(int **arr, int size);

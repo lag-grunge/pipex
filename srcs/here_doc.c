@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-int	read_here_doc(char *limiter)
+void	read_here_doc(char *limiter)
 {
     char    *line;
     size_t  len_limiter;
@@ -15,12 +15,12 @@ int	read_here_doc(char *limiter)
     {
 		if (line)
 		{
-			ft_putstr_fd(line, fd_in);
+			ft_putendl_fd(line, fd_in);
 			free(line);
 		}
 		ret = get_next_line(STDIN_FILENO, &line);
 		if (line && !ft_strncmp(line, limiter, len_limiter + 1))
 			break;
     }
-	return (fd_in);
+	close(fd_in);
 }
