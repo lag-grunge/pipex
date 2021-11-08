@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sdalton <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/21 08:27:12 by sdalton           #+#    #+#             */
+/*   Updated: 2021/10/21 08:27:14 by sdalton          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-static void ft_pipex(char *argv[], char *env[])
+static void	ft_pipex(char *argv[], char *env[])
 {
 	int		pdes[2];
 	pid_t	pid;
@@ -26,10 +38,10 @@ static void ft_pipex(char *argv[], char *env[])
 	wait(NULL);
 }
 
-int main(int argc, char *argv[], char *env[])
+int	main(int argc, char *argv[], char *env[])
 {
-	int fd_in;
-	int fd_out;
+	int	fd_in;
+	int	fd_out;
 
 	if (argc != 5)
 	{

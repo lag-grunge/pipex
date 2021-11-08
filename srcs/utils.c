@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sdalton <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/21 08:05:05 by sdalton           #+#    #+#             */
+/*   Updated: 2021/10/21 08:05:25 by sdalton          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-int open_for_read(char *filename)
+int	open_for_read(char *filename)
 {
 	int	fd_in;
 
@@ -10,12 +22,12 @@ int open_for_read(char *filename)
 		perror(filename);
 		exit(file1_not_open);
 	}
-	return  (fd_in);
+	return (fd_in);
 }
 
-int open_for_write(char *filename)
+int	open_for_write(char *filename)
 {
-	int fd_out;
+	int	fd_out;
 
 	fd_out = open(filename, O_WRONLY | O_CREAT | O_EXCL, 0666);
 	if (fd_out == -1)
@@ -32,7 +44,7 @@ int open_for_write(char *filename)
 	return (fd_out);
 }
 
-void ft_redirect(int *pdes, int in_out)
+void	ft_redirect(int *pdes, int in_out)
 {
 	if (in_out == STDIN_FILENO)
 		dup2(pdes[0], STDIN_FILENO);
@@ -47,10 +59,10 @@ void ft_redirect(int *pdes, int in_out)
 	close(pdes[1]);
 }
 
-void ft_exec(char *cmd, char *env[])
+void	ft_exec(char *cmd, char *env[])
 {
-	char **s;
-	char *exec_path;
+	char	**s;
+	char	*exec_path;
 
 	s = ft_split(cmd, ' ');
 	ft_which(&exec_path, s[0], env);
