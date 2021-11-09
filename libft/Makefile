@@ -15,7 +15,7 @@ HEADER = libft.h
 
 CC = gcc
 
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 all : ${NAME}
 

@@ -36,9 +36,9 @@ HEADERS = pipex.h ${LIB_DIR}/libft.h
 
 LIBRARIES =  -lft
 
-CFLAGS = -g -Wall -Wextra -Werror -MMD
+CFLAGS = -Wall -Wextra -Werror -MMD
 
-LDFLAGS = -L${LIB_DIR} -fsanitize=address
+LDFLAGS = -L${LIB_DIR}
 
 DEPS := ${OBJS_REQ:.o=.d} ${OBJS_CMN:.o=.d}
 
