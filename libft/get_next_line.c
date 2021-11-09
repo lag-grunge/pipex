@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sdalton <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/09 12:18:59 by sdalton           #+#    #+#             */
+/*   Updated: 2021/11/09 12:19:08 by sdalton          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 32
+# define BUFFER_SIZE 4
 #endif
 
 static size_t	ft_realloc(char **buf, size_t buf_size)
 {
-	char *tmp;
+	char	*tmp;
 
 	tmp = *buf;
 	*buf = malloc(buf_size * 2);
@@ -19,58 +31,48 @@ static size_t	ft_realloc(char **buf, size_t buf_size)
 	return (buf_size * 2);
 }
 
+static void	ft_free(char **buf)
+{
+	free(*buf);
+	*buf = NULL;
+}
+
+static int	read_byte(int fd, char **buf_ptr, size_t i)
+{
+	static size_t	cur_buffer_size = BUFFER_SIZE;
+	int				ret;
+
+	ret = read(fd, *buf_ptr + i, 1);
+	if (ret == 1 && (*buf_ptr)[i] == '\n')
+	{
+		cur_buffer_size = BUFFER_SIZE;
+		return (1);
+	}
+	if (ret == 1 && i + 2 == cur_buffer_size)
+		cur_buffer_size = ft_realloc(buf_ptr, cur_buffer_size);
+	return (ret);
+}
+
 int	get_next_line(int fd, char **line)
 {
 	int		ret;
 	char	*buf;
 	size_t	i;
-	size_t  cur_BUFFER_SIZE;
 
-	cur_BUFFER_SIZE = BUFFER_SIZE;
-	buf = malloc(cur_BUFFER_SIZE);
+	buf = malloc(BUFFER_SIZE);
 	if (!buf)
 		return (-1);
 	i = 0;
-	*line = 0;
-	ret = read(fd, buf + i, 1);
-	if (ret != 1)
-		return (ret);
+	ret = read(fd, buf, 1);
 	while (ret == 1 && buf[i] != '\n')
 	{
 		i++;
-		ret = read(fd, buf + i, 1);
-		if (i + 1 == cur_BUFFER_SIZE)
-			cur_BUFFER_SIZE = ft_realloc(&buf, cur_BUFFER_SIZE);
-		if (!cur_BUFFER_SIZE || ret == -1)
-			return (-1);
+		ret = read_byte(fd, &buf, i);
 	}
-	buf[i] = 0;
+	if (ret == -1 || (ret == 0 && i == 0))
+		ft_free(&buf);
+	else
+		buf[i] = 0;
 	*line = buf;
 	return (ret);
 }
-/*#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-int main(int argc, char *argv[])
-{
-	if (argc == 2)
-	{
-		int fd = open(argv[1], O_RDONLY);
-		char *line = 0;
-		while (get_next_line(fd, &line))
-		{
-			ft_putstr_fd(line, 1);
-			write(1, "\n", 1);
-			free(line);
-			line = 0;
-		}
-		if (line)
-		{
-			ft_putstr_fd(line, 1);
-			write(1, "\n", 1);
-			free(line);
-			line = 0;
-		}
-	}
-	return (0);
-}*/

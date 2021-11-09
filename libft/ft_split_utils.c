@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_utils.c                                        :+:      :+:    :+:   */
+/*   ft_split_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdalton <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/11 10:14:25 by sdalton           #+#    #+#             */
-/*   Updated: 2021/05/11 13:33:26 by sdalton          ###   ########.fr       */
+/*   Created: 2021/11/09 12:38:35 by sdalton           #+#    #+#             */
+/*   Updated: 2021/11/09 12:38:38 by sdalton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char*	get_next_word_beg(char *cur_delim, char c)
+char	*get_next_word_beg(char *cur_delim, char c)
 {
-	unsigned	i;
+	t_uint	i;
 
 	i = 0;
 	while (cur_delim[i] && cur_delim[i] == c)
@@ -22,11 +22,11 @@ char*	get_next_word_beg(char *cur_delim, char c)
 	return (cur_delim + i);
 }
 
-t_uint get_number_words(const char *s, char c)
+t_uint	get_number_words(const char *s, char c)
 {
-	char		*cur_delim;
-	char		*tail;
-	unsigned	words;
+	char	*cur_delim;
+	char	*tail;
+	t_uint	words;
 
 	tail = get_next_word_beg((char *)s, c);
 	cur_delim = tail;
@@ -41,17 +41,17 @@ t_uint get_number_words(const char *s, char c)
 	return (words);
 }
 
-size_t  ft_spllen(char **spl)
+size_t	ft_spllen(char **spl)
 {
-    size_t	i;
+	size_t	i;
 
-    i = 0;
-    while (*spl++)
-        i++;
-    return (i);
+	i = 0;
+	while (*spl++)
+		i++;
+	return (i);
 }
 
-void    clean_split(char **split, unsigned i)
+void	clean_split(char **split, t_uint i)
 {
 	while (i > 0)
 	{

@@ -51,7 +51,7 @@ int	main(int argc, char *argv[], char *env[])
 	fd_in = open_for_read(argv[1]);
 	dup2(fd_in, STDIN_FILENO);
 	close(fd_in);
-	fd_out = open_for_write(argv[4]);
+	fd_out = open_for_write(argv[4], 0);
 	dup2(fd_out, STDOUT_FILENO);
 	close(fd_out);
 	ft_pipex(argv, env);

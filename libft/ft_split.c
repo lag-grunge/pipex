@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _ft_split.c                                        :+:      :+:    :+:   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdalton <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/11 10:14:25 by sdalton           #+#    #+#             */
-/*   Updated: 2021/05/11 13:33:26 by sdalton          ###   ########.fr       */
+/*   Created: 2021/11/09 12:42:16 by sdalton           #+#    #+#             */
+/*   Updated: 2021/11/09 12:42:18 by sdalton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char*	get_next_word(char **tail, char c)
+char	*get_next_word(char **tail, char c)
 {
 	char		*word;
 	char		*cur_delim;
@@ -32,10 +32,10 @@ char*	get_next_word(char **tail, char c)
 
 char	**ft_split(const char *s, char c)
 {	
-	unsigned 	words;
-	char		**split;
-	char		*tail;
-	unsigned	i;
+	t_uint	words;
+	char	**split;
+	char	*tail;
+	t_uint	i;
 
 	i = 0;
 	words = get_number_words(s, c);

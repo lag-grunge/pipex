@@ -24,12 +24,11 @@
 # include "libft.h"
 # ifdef BONUS
 #  define ARG_ERROR_MSG "Few arguments. Usage: \n \
-						bonus 			./pipex file1 cmd1 cmd2 ... cmdn file2\n \
-						here_doc 		./pipex here_doc LIMITER cmd1 cmd2 ... cmdn \
-						file2.\n"
+bonus 			./pipex file1 cmd1 cmd2 ... cmdn file2\n \
+here_doc 		./pipex here_doc LIMITER cmd1 cmd2 ... cmdn file2.\n"
 # else
-#  define ARG_ERROR_MSG "Few arguments. Usage: 5 arguments\n \
-						mandatory 		./pipex file1 cmd1 cmd2 file2\n"
+#  define ARG_ERROR_MSG "Too much arguments. Usage: 5 arguments\n \
+./pipex	file1 cmd1 cmd2 file2\n"
 # endif
 # define BAD_ENV_MSG "No PATH var found in environment"
 # define PERM_DENIAL_MSG "Permission denied"
@@ -52,7 +51,7 @@ enum e_errors	{
 };
 
 void	ft_which(char **exec_path, char *cmd, char *env[]);
-int		open_for_write(char *filename);
+int		open_for_write(char *filename, int append);
 int		open_for_read(char *filename);
 void	read_here_doc(char *limiter);
 void	ft_redirect(int *pdes, int in_out);

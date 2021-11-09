@@ -21,18 +21,19 @@ void	read_here_doc(char *limiter)
 
 	ret = 1;
 	len_limiter = ft_strlen(limiter);
-	fd_in = open_for_write("heredoc");
+	fd_in = open_for_write(HEREDOC, 0);
 	line = NULL;
-	while (ret)
+	while (ret == 1)
 	{
+		ret = get_next_line(STDIN_FILENO, &line);
 		if (line)
 		{
-			ft_putendl_fd(line, fd_in);
+			ret = ft_strncmp(line, limiter, len_limiter + 1) != 0;
+			if (ret)
+				ft_putendl_fd(line, fd_in);
 			free(line);
+			line = 0;
 		}
-		ret = get_next_line(STDIN_FILENO, &line);
-		if (line && !ft_strncmp(line, limiter, len_limiter + 1))
-			break ;
 	}
 	close(fd_in);
 }

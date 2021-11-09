@@ -26,15 +26,21 @@ SRCS_REQ_DIR = ${SRCS_B_DIR}
 OBJS_OUT = $(addprefix ${OBJS_MAND_DIR}/,${OBJS})
 endif
 
-LIBFT = libft.a
-
 LIB_DIR = ./libft
+
+LIBFT = ${LIB_DIR}/libft.a
 
 INCLUDE = -I${LIB_DIR} -I./includes
 
-LIBRARIES = -L${LIB_DIR} -lft
+HEADERS = pipex.h ${LIB_DIR}/libft.h
 
-CFLAGS = -g -Wall -Wextra -Werror
+LIBRARIES =  -lft
+
+CFLAGS = -g -Wall -Wextra -Werror -MMD
+
+LDFLAGS = -L${LIB_DIR} -fsanitize=address
+
+DEPS := ${OBJS_REQ:.o=.d} ${OBJS_CMN:.o=.d}
 
 ${OBJS_DIR}/%.o : ${SRCS_DIR}/%.c
 	$(CC) ${CFLAGS} ${INCLUDE} -c $< -o $@
@@ -42,28 +48,32 @@ ${OBJS_DIR}/%.o : ${SRCS_DIR}/%.c
 ${OBJS_REQ_DIR}/%.o : ${SRCS_REQ_DIR}/%.c
 	$(CC) ${CFLAGS} ${INCLUDE} -c $< -o $@
 
-all : ${LIBFT} ${NAME}
+all : ${NAME}
 
-${LIBFT} : ${LIB_DIR}
-	@make -C $<
-
-${NAME} : ${OBJS_REQ} ${OBJS_CMN}
-		$(CC) ${CFLAGS} $^ ${LIBRARIES} -o $@
+${NAME} : ${OBJS_REQ} ${OBJS_CMN} ${LIBFT}
+		$(CC) ${LDFLAGS} ${OBJS_REQ} ${OBJS_CMN} ${LIBRARIES} -o $@
 		@rm -rf ${OBJS_OUT}
 
 bonus	:
 	make BONUS=1 all
 
-${OBJS_REQ} : | ${DIRS} ${OBJS_CMN}
+${OBJS_REQ} ${OBJS_CMN} : | ${DIRS}
 
 ${DIRS} :
 	mkdir -p ${OBJS_DIR}
 	mkdir -p ${OBJS_B_DIR}
 	mkdir -p ${OBJS_MAND_DIR}
 
+
+${LIBFT} : libft ;
+
+-include ${DEPS}
+
+.PHONY : all clean fclean re libft
+
 clean :
 	@make clean -C ${LIB_DIR}
-	rm -f ${OBJS_REQ} ${OBJS_CMN}
+	rm -f ${OBJS_REQ} ${OBJS_CMN} ${DEPS}
 
 fclean : clean
 	@rm -f ${LIB_DIR}/${LIBFT}
@@ -71,4 +81,5 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all clean fclean re
+libft :
+	@make -C ${LIB_DIR}

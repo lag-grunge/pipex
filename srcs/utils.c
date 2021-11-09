@@ -25,7 +25,7 @@ int	open_for_read(char *filename)
 	return (fd_in);
 }
 
-int	open_for_write(char *filename)
+int	open_for_write(char *filename, int append)
 {
 	int	fd_out;
 
@@ -37,7 +37,10 @@ int	open_for_write(char *filename)
 			perror(filename);
 			exit(file2_not_open);
 		}
-		fd_out = open(filename, O_WRONLY | O_TRUNC);
+		if (append)
+			fd_out = open(filename, O_WRONLY | O_APPEND);
+		else
+			fd_out = open(filename, O_WRONLY | O_TRUNC);
 		if (fd_out == -1)
 			exit(file2_not_open);
 	}

@@ -18,18 +18,21 @@ static int	ft_openfiles(int argc, char *argv[])
 	int	fd_out;
 	int	cmd_start;
 
-	cmd_start = 2;
 	if (!ft_strncmp(HEREDOC, argv[1], ft_strlen(HEREDOC)))
 	{
 		read_here_doc(argv[2]);
-		fd_in = open_for_read("heredoc");
+		fd_in = open_for_read(HEREDOC);
 		cmd_start = 3;
+		fd_out = open_for_write(argv[argc - 1], 1);
 	}
 	else
+	{
+		cmd_start = 2;
 		fd_in = open_for_read(argv[1]);
+		fd_out = open_for_write(argv[argc - 1], 0);
+	}
 	dup2(fd_in, STDIN_FILENO);
 	close(fd_in);
-	fd_out = open_for_write(argv[argc - 1]);
 	dup2(fd_out, STDOUT_FILENO);
 	close(fd_out);
 	return (cmd_start);
@@ -106,7 +109,10 @@ int	main(int argc, char *argv[], char *env[])
 		return (argv_error);
 	}
 	if (cmd_start_arg == 3)
+	{
 		ft_pipex(cmd_start_arg, argc - 4, argv, env);
+		unlink(HEREDOC);
+	}
 	else
 		ft_pipex(cmd_start_arg, argc - 3, argv, env);
 	return (0);
