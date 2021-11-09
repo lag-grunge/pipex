@@ -76,7 +76,7 @@ clean :
 	rm -f ${OBJS_REQ} ${OBJS_CMN} ${DEPS}
 
 fclean : clean
-	@rm -f ${LIB_DIR}/${LIBFT}
+	@rm -f ${LIBFT}
 	rm -f ${NAME}
 
 re : fclean all
