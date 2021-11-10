@@ -58,4 +58,5 @@ void	clean_split(char **split, t_uint i)
 		free(split[i - 1]);
 		i--;
 	}
+	free(split);
 }

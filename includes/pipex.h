@@ -23,14 +23,18 @@
 # include <sys/wait.h>
 # include "libft.h"
 # ifdef BONUS
-#  define ARG_ERROR_MSG "Few arguments. Usage: \n \
-bonus 			./pipex file1 cmd1 cmd2 ... cmdn file2\n \
-here_doc 		./pipex here_doc LIMITER cmd1 cmd2 ... cmdn file2.\n"
+#  define ARG_ERROR_MSG "Few arguments. Bonus usage: \n \
+multipipe:\n 											\
+		< file1 cmd1 | cmd2 | ... | cmdn > file2		\
+		./pipex file1 cmd1 cmd2 ... cmdn file2\n 		\
+here_doc:\n												\
+		cmd1 << LIMITER	| cmd2 file\n 					\
+		./pipex here_doc LIMITER cmd1 cmd2 file.\n"
 # else
-#  define ARG_ERROR_MSG "Too much arguments. Usage: 5 arguments\n \
+#  define ARG_ERROR_MSG "Too much or few arguments.\n Mandatory usage: 5 arguments\n \
 ./pipex	file1 cmd1 cmd2 file2\n"
 # endif
-# define BAD_ENV_MSG "No PATH var found in environment"
+# define BAD_ENV_MSG "No PATH var found in environment\n"
 # define PERM_DENIAL_MSG "Permission denied"
 # define BIN_NOT_FOUND_MSG "No such file"
 # define HEREDOC "here_doc"
