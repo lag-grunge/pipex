@@ -102,8 +102,13 @@ int	main(int argc, char *argv[], char *env[])
 {
 	int	cmd_start_arg;
 
+	if (argc < 5)
+	{
+		write(STDERR_FILENO, ARG_ERROR_MSG, ft_strlen(ARG_ERROR_MSG));
+		return (argv_error);
+	}
 	cmd_start_arg = ft_openfiles(argc, argv);
-	if (argc < 5 || (cmd_start_arg == 3 && argc == 5))
+	if (cmd_start_arg == 3 && argc == 5)
 	{
 		write(STDERR_FILENO, ARG_ERROR_MSG, ft_strlen(ARG_ERROR_MSG));
 		return (argv_error);

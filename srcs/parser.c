@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-char	*find_path(char *env[])
+static char	*find_path(char *env[])
 {
 	size_t	i;
 	size_t	p;
@@ -45,31 +45,7 @@ static char	*get_fp(char *dir, char *cmd)
 	return (fp);
 }
 
-int	find_cmd_in_var(char *cmd, char *var)
-{
-	int		ret;
-	size_t	i;
-	char	**s;
-	char	*fp;
-
-	i = 0;
-	s = ft_split(ft_strchr(var, '=') + 1, ':');
-	ret = not_fnd_bin_in_path;
-	while (ret && s[i])
-	{
-		fp = get_fp(s[i], cmd);
-		if (ret == not_fnd_bin_in_path && !access(fp, F_OK))
-			ret = not_perms_for_exec;
-		if (ret == not_perms_for_exec && !access(fp, X_OK))
-			ret = 0;
-		free(fp);
-		i++;
-	}
-	clean_split(s, ft_spllen(s));
-	return (ret);
-}
-
-char	*get_cmd(char *cmd, char *var)
+static int	find_cmd_in_var(char **exec_path, char *cmd, char *var)
 {
 	size_t	i;
 	char	**s;
@@ -77,19 +53,25 @@ char	*get_cmd(char *cmd, char *var)
 
 	i = 0;
 	s = ft_split(ft_strchr(var, '=') + 1, ':');
+	*exec_path = NULL;
 	while (s[i])
 	{
 		fp = get_fp(s[i], cmd);
-		if (!access(fp, X_OK))
+		if (!access(fp, F_OK))
 		{
 			clean_split(s, ft_spllen(s));
-			return (fp);
+			if (!access(fp, X_OK))
+			{
+				*exec_path = fp;
+				return (0);
+			}
+			return (not_perms_for_exec);
 		}
 		free(fp);
 		i++;
 	}
 	clean_split(s, ft_spllen(s));
-	return (NULL);
+	return (not_fnd_bin_in_path);
 }
 
 void	ft_which(char **exec_path, char *cmd, char *env[])
@@ -108,14 +90,9 @@ void	ft_which(char **exec_path, char *cmd, char *env[])
 		write(2, BAD_ENV_MSG, ft_strlen(BAD_ENV_MSG));
 		exit(nopath_in_env);
 	}
-	find_cmd = find_cmd_in_var(cmd, path_str);
-	if (find_cmd == not_perms_for_exec)
-		perror(cmd);
-	else if (find_cmd == not_fnd_bin_in_path)
-		perror(cmd);
-	if (find_cmd)
-		exit(find_cmd);
-	*exec_path = get_cmd(cmd, path_str);
-	if (!*exec_path)
-		exit(not_perms_for_exec);
+	find_cmd = find_cmd_in_var(exec_path, cmd, path_str);
+	if (!find_cmd)
+		return ;
+	perror(cmd);
+	exit(find_cmd);
 }
