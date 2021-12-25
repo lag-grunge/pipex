@@ -47,19 +47,49 @@ int	open_for_write(char *filename, int append)
 	return (fd_out);
 }
 
+void 	ft_openfiles(char *infile, char *outfile, int is_hdoc)
+{
+	int			fd_in;
+	int			fd_out;
+
+	if (!is_hdoc)
+	{
+		fd_in = open_for_read(infile);
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+		fd_out = open_for_write(outfile, 0);
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}
+	else
+	{
+		fd_out = open_for_write(outfile, 1);
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}
+}
+
 void	ft_redirect(int *pdes, int in_out)
 {
 	if (in_out == STDIN_FILENO)
+	{
 		dup2(pdes[0], STDIN_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
+	}
 	else if (in_out == STDOUT_FILENO)
+	{
 		dup2(pdes[1], STDOUT_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
+	}
 	else if (in_out == -1)
 	{
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
 	}
-	close(pdes[0]);
-	close(pdes[1]);
 }
 
 void	ft_exec(char *cmd, char *env[])
@@ -70,17 +100,6 @@ void	ft_exec(char *cmd, char *env[])
 	s = ft_split(cmd, ' ');
 	ft_which(&exec_path, s[0], env);
 	execve(exec_path, s, env);
-}
-
-void	free_2d_array(int **arr, int size)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
+	perror(cmd);
+	exit(cmd_exec_fail);
 }

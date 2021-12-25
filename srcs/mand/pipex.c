@@ -12,26 +12,30 @@
 
 #include "pipex.h"
 
-static void	ft_pipex(char *argv[], char *env[])
+static void	ft_pipex(char *argv[], char *env[], int sav)
 {
 	int		pdes[2];
 	pid_t	pid;
 	pid_t	pid2;
+	int		s[2];
 
-	pipe(pdes);
+	if (pipe(pdes) == -1)
+		exit(pipe_fail);
 	pid = fork();
-	if (pid == 0)
-	{
-		ft_redirect(pdes, STDIN_FILENO);
-		ft_exec(argv[3], env);
-		exit(second_cmd_fail);
-	}
-	pid2 = fork();
-	if (pid2 == 0)
+	if (pid < 0)
+		exit(fork_fail);
+	else if (pid == 0)
 	{
 		ft_redirect(pdes, STDOUT_FILENO);
 		ft_exec(argv[2], env);
-		exit(first_cmd_fail);
+	}
+	pid2 = fork();
+	if (pid2 < 0)
+		exit(fork_fail);
+	else if (pid2 == 0)
+	{
+		ft_redirect(pdes, STDIN_FILENO);
+		ft_exec(argv[3], env);
 	}
 	ft_redirect(pdes, -1);
 	wait(NULL);
@@ -40,20 +44,17 @@ static void	ft_pipex(char *argv[], char *env[])
 
 int	main(int argc, char *argv[], char *env[])
 {
-	int	fd_in;
-	int	fd_out;
+	int 	sav;
 
+	sav = dup(STDIN_FILENO);
 	if (argc != 5)
 	{
 		write(STDERR_FILENO, ARG_ERROR_MSG, ft_strlen(ARG_ERROR_MSG));
 		exit(argv_error);
 	}
-	fd_in = open_for_read(argv[1]);
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
-	fd_out = open_for_write(argv[4], 0);
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_out);
-	ft_pipex(argv, env);
+	ft_openfiles(argv[1], argv[4], 0);
+	ft_pipex(argv, env, sav);
+	dup2(sav, STDOUT_FILENO);
+	close(sav);
 	return (0);
 }

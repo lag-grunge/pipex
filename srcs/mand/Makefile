@@ -10,7 +10,7 @@ DEPS = ${OBJS:.o=.d} ${OBJS_CMN:.o=.d}
 
 LIB_DIR = ../../libft
 LIBRARIES =  -lft
-CFLAGS := -Wall -Wextra -Werror -MMD
+CFLAGS := -g -Wall -Wextra -Werror -MMD
 INCLUDE = -I${LIB_DIR} -I../../includes
 CFLAGS += ${INCLUDE}
 LDFLAGS = -L${LIB_DIR}

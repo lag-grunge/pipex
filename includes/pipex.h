@@ -38,6 +38,7 @@ here_doc:\n												\
 # define PERM_DENIAL_MSG "Permission denied"
 # define BIN_NOT_FOUND_MSG "No such file"
 # define HEREDOC "here_doc"
+# define H_DOC (!ft_strncmp(HEREDOC, argv[1], ft_strlen(HEREDOC)))
 
 enum e_errors	{
 	argv_error = 1,
@@ -57,6 +58,7 @@ enum e_errors	{
 void	ft_which(char **exec_path, char *cmd, char *env[]);
 int		open_for_write(char *filename, int append);
 int		open_for_read(char *filename);
+void 	ft_openfiles(char *infile, char *outfile, int is_hdoc);
 void	read_here_doc(char *limiter);
 void	ft_redirect(int *pdes, int in_out);
 void	ft_exec(char *cmd, char *env[]);

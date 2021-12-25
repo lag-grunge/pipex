@@ -17,11 +17,9 @@ void	read_here_doc(char *limiter)
 	char	*line;
 	size_t	len_limiter;
 	int		ret;
-	int		fd_in;
 
 	ret = 1;
 	len_limiter = ft_strlen(limiter);
-	fd_in = open_for_write(HEREDOC, 0);
 	line = NULL;
 	while (ret == 1)
 	{
@@ -30,10 +28,9 @@ void	read_here_doc(char *limiter)
 		{
 			ret = ft_strncmp(line, limiter, len_limiter + 1) != 0;
 			if (ret)
-				ft_putendl_fd(line, fd_in);
+				ft_putendl_fd(line, STDOUT_FILENO);
 			free(line);
 			line = 0;
 		}
 	}
-	close(fd_in);
 }

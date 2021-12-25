@@ -15,7 +15,7 @@ LIB_DIR = ./libft
 LIBFT = ${LIB_DIR}/libft.a
 INCLUDE = -I${LIB_DIR} -I./includes
 LIBRARIES =  -lft
-CFLAGS = -Wall -Wextra -Werror -MMD
+CFLAGS = -g -Wall -Wextra -Werror -MMD
 DEPS := ${OBJS:.o=.d} ${OBJS_CMN:.o=.d}
 
 all bonus : ${OBJS_CMN} ${LIBFT}
